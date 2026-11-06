@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { RESTAURANTS, type Restaurant } from "@/lib/restaurants";
 import { MenuViewer } from "@/components/MenuViewer";
+import { playBell } from "@/lib/bell";
 
 const StreetScene = lazy(() => import("@/components/street/StreetScene"));
 
@@ -40,6 +41,7 @@ function Index() {
   const select = useCallback((r: Restaurant) => {
     setOpen(null);
     setSelected(r);
+    playBell({ "chhotu-dhaba": 523.25, "hub-360": 587.33, "dragon-delight": 659.25 }[r.slug]);
   }, []);
   const arrive = useCallback((r: Restaurant) => setOpen(r), []);
   const close = useCallback(() => {
@@ -61,7 +63,10 @@ function Index() {
           <p className="max-w-md text-muted-foreground">Your browser can't show the 3D street, but every menu is still here.</p>
           <div className="grid w-full max-w-md gap-3">
             {RESTAURANTS.map((r) => (
-              <button key={r.slug} onClick={() => setOpen(r)} className="rounded-xl border border-border bg-card px-5 py-4 text-left font-display text-xl text-card-foreground hover:border-primary">
+              <button key={r.slug} onClick={() => {
+                  playBell();
+                  setOpen(r);
+                }} className="rounded-xl border border-border bg-card px-5 py-4 text-left font-display text-xl text-card-foreground hover:border-primary">
                 {r.name}
               </button>
             ))}
@@ -101,7 +106,10 @@ function Index() {
                 <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Evening on the bazaar</p>
                 <h2 className="mt-3 font-display text-5xl leading-tight text-primary sm:text-6xl">Three kitchens, one little street</h2>
                 <p className="mt-4 text-muted-foreground">Stroll past Chhotu Dhaba, Hub 360 and Dragon Delight. Tap a shopfront to light it up and read its real menu.</p>
-                <button onClick={() => setEntered(true)} className="mt-8 rounded-full bg-primary px-8 py-3 font-medium text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-105">
+                <button onClick={() => {
+                  playBell(440);
+                  setEntered(true);
+                }} className="mt-8 rounded-full bg-primary px-8 py-3 font-medium text-primary-foreground shadow-[var(--shadow-glow)] transition hover:scale-105">
                   Enter the street
                 </button>
               </div>
