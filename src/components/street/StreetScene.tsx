@@ -364,7 +364,7 @@ function Building({ r, active, onSelect, fontsReady }: { r: Restaurant; active: 
       {Array.from({ length: 9 }).map((_, i) => (
         <mesh key={i} position={[-2.4 + i * 0.6, 2.22, 1.42]}>
           <sphereGeometry args={[0.055, 8, 8]} />
-          <meshStandardMaterial ref={i === 0 ? bulbs : undefined} color="#fff2c8" emissive="#ffcc66" emissiveIntensity={0.4} />
+          <meshStandardMaterial ref={i === 0 ? bulbs : null} color="#fff2c8" emissive="#ffcc66" emissiveIntensity={0.4} />
         </mesh>
       ))}
       {/* signboard */}
@@ -501,7 +501,7 @@ function StringLights() {
       const x = -12 + (i / 60) * 24;
       const seg = ((x + 12) % 8) / 8;
       const y = 4.6 - Math.sin(seg * Math.PI) * 0.6;
-      out.push({ p: [x, y, 1.6], c: cols[i % cols.length] });
+      out.push({ p: [x, y, 1.6], c: cols[i % cols.length]! });
     }
     return out;
   }, []);
@@ -565,7 +565,7 @@ function Rickshaw() {
         <sphereGeometry args={[0.08, 8, 8]} />
         <meshStandardMaterial color="#fff" emissive="#fff3c0" emissiveIntensity={3} />
       </mesh>
-      {[[-0.55, 0.42], [-0.55, -0.42], [0.65, 0]].map(([x, z], i) => (
+      {([[-0.55, 0.42], [-0.55, -0.42], [0.65, 0]] as [number, number][]).map(([x, z], i) => (
         <mesh key={i} position={[x, 0.2, z]} rotation-x={Math.PI / 2}>
           <torusGeometry args={[0.16, 0.06, 8, 16]} />
           <meshStandardMaterial color="#1a1a1a" />
