@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Restaurant data and menu image lists live in `src/lib/restaurants.ts`; menu photos are static files in `public/menus/<slug>/` (owner's brief requires that layout and untouched original images).

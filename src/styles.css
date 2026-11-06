@@ -142,3 +142,24 @@
     color: var(--color-foreground);
   }
 }
+
+/* MenuBazar dusk palette */
+:root {
+  --background: oklch(0.2 0.04 330);
+  --foreground: oklch(0.95 0.03 80);
+  --card: oklch(0.26 0.05 330);
+  --card-foreground: oklch(0.95 0.03 80);
+  --primary: oklch(0.82 0.15 75);
+  --primary-foreground: oklch(0.2 0.04 330);
+  --muted: oklch(0.3 0.04 330);
+  --muted-foreground: oklch(0.8 0.05 60);
+  --accent: oklch(0.35 0.06 330);
+  --accent-foreground: oklch(0.95 0.03 80);
+  --border: oklch(0.95 0.03 80 / 18%);
+  --ring: oklch(0.82 0.15 75);
+  --shadow-glow: 0 0 40px -6px oklch(0.82 0.15 75 / 60%);
+}
+@theme inline {
+  --font-display: "Yatra One", serif;
+  --font-sans: "Karla", system-ui, sans-serif;
+}
