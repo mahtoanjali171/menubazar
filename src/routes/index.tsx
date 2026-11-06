@@ -85,7 +85,7 @@ function Index() {
 
           {entered && !open && (
             <nav aria-label="Restaurants" className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-2 p-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <p className="text-xs text-muted-foreground">Drag to look around · scroll or pinch to zoom · tap a shop</p>
+              <p className="text-xs text-muted-foreground">Drag to look · pinch to zoom · two fingers to slide · tap a shop</p>
               <div className="flex flex-wrap justify-center gap-2">
                 {RESTAURANTS.map((r) => (
                   <button

@@ -7,7 +7,7 @@ export function playBell(pitch = 523.25) {
     if (ctx.state === "suspended") void ctx.resume();
     const now = ctx.currentTime;
     const master = ctx.createGain();
-    master.gain.value = 0.18;
+    master.gain.value = 0.05;
     master.connect(ctx.destination);
     // Bell-like inharmonic partials, each fading at its own pace.
     const partials: [number, number, number][] = [

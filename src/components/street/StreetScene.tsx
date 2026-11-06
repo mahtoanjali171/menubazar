@@ -86,19 +86,54 @@ function useFontsReady() {
 }
 
 /* ---------- camera ---------- */
+const HOME_DIR = HOME_CAM.clone().sub(HOME_TARGET).normalize();
+// Distance needed so `halfWidth` world units fit horizontally on screen.
+function fitDistance(halfWidth: number, fovDeg: number, aspect: number) {
+  return halfWidth / (Math.tan((fovDeg * Math.PI) / 360) * Math.min(aspect, 1.8));
+}
+
 function CameraRig({ selected, onArrive }: { selected: Restaurant | null; onArrive: (r: Restaurant) => void }) {
-  const { camera, controls } = useThree() as unknown as { camera: THREE.PerspectiveCamera; controls: { target: THREE.Vector3; update: () => void; enabled: boolean } | null };
+  const { camera, controls, size, scene } = useThree() as unknown as {
+    camera: THREE.PerspectiveCamera;
+    controls: { target: THREE.Vector3; update: () => void; enabled: boolean } | null;
+    size: { width: number; height: number };
+    scene: THREE.Scene;
+  };
+  const aspect = size.width / size.height;
+  const portrait = aspect < 1;
+  const fov = portrait ? 58 : 42;
+  const homeDist = Math.max(HOME_CAM.distanceTo(HOME_TARGET), fitDistance(13, fov, aspect));
+  const homePos = useMemo(() => HOME_TARGET.clone().addScaledVector(HOME_DIR, homeDist), [homeDist]);
+  const focusDist = Math.max(8, fitDistance(3.4, fov, aspect));
+
   const anim = useRef<{ t: number; fromP: THREE.Vector3; fromT: THREE.Vector3; toP: THREE.Vector3; toT: THREE.Vector3; r: Restaurant | null } | null>(null);
   const first = useRef(true);
+
+  // Fit the whole street on any screen size (phones included).
+  useEffect(() => {
+    camera.fov = fov;
+    camera.updateProjectionMatrix();
+    if (scene.fog instanceof THREE.Fog) {
+      scene.fog.near = homeDist + 6;
+      scene.fog.far = homeDist + 40;
+    }
+    if (!selected && !anim.current && controls) {
+      camera.position.copy(homePos);
+      controls.target.copy(HOME_TARGET);
+      controls.update();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fov, homeDist, controls]);
 
   useEffect(() => {
     if (!controls) return;
     if (first.current && !selected) { first.current = false; return; }
     first.current = false;
-    const toP = selected ? new THREE.Vector3(selected.x, 2.8, 5) : HOME_CAM.clone();
+    const toP = selected ? new THREE.Vector3(selected.x, 2.6, BUILDING_Z + focusDist) : homePos.clone();
     const toT = selected ? new THREE.Vector3(selected.x, 2.4, BUILDING_Z) : HOME_TARGET.clone();
     anim.current = { t: 0, fromP: camera.position.clone(), fromT: controls.target.clone(), toP, toT, r: selected };
     controls.enabled = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected, controls, camera]);
 
   useFrame((_, delta) => {
@@ -120,10 +155,11 @@ function CameraRig({ selected, onArrive }: { selected: Restaurant | null; onArri
     <OrbitControls
       makeDefault
       target={HOME_TARGET.toArray()}
-      enablePan={false}
+      enablePan
+      screenSpacePanning
       enableDamping
       minDistance={4}
-      maxDistance={26}
+      maxDistance={homeDist + 8}
       minPolarAngle={0.35}
       maxPolarAngle={1.42}
       minAzimuthAngle={-0.9}
